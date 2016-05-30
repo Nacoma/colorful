@@ -28,5 +28,5 @@ Another more finicky output is currently processed: `\%p%d` (eg `%p5`). This wil
 *Currently the hex format compiles to `%0 => #rrggbb`, but will soon expect you to provide the `#` to make output more configurable (eg `#%0`).
 
 ## Screenshots
-[[http://imgur.com/OVvqTBn]]
-[[http://imgur.com/htZpqpj]]
+![screen_1][http://imgur.com/OVvqTBn]
+![screen_2][http://imgur.com/htZpqpj]
