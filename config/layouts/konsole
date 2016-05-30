@@ -1,0 +1,65 @@
+[Background]
+Color = %0
+
+[BackgroundIntense]
+Color = %1
+
+[Color0]
+Color = %0
+
+[Color0Intense]
+Color = %1
+
+[Color1]
+Color = %2
+
+[Color1Intense]
+Color = %3
+
+[Color2]
+Color = %4
+
+[Color2Intense]
+Color = %5
+
+[Color3]
+Color = %6
+
+[Color3Intense]
+Color = %7
+
+[Color4]
+Color = %8
+
+[Color4Intense]
+Color = %9
+
+[Color5]
+Color = %10
+
+[Color5Intense]
+Color = %11
+
+[Color6]
+Color = %12
+
+[Color6Intense]
+Color = %13
+
+[Color7]
+Color = %14
+
+[Color7Intense]
+Color = %15
+
+[Foreground]
+Color = %14
+
+[ForegroundIntense]
+Color = %15
+
+[General]
+Description=Colorful
+Opacity=30
+Wallpaper=
+Opacity=.85

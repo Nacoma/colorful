@@ -1,0 +1,127 @@
+#!/usr/bin/python
+from os.path import isfile, join
+import sys
+import os
+import argparse
+from src.Colorful import Colorful
+import random
+import ConfigParser
+import re
+from pprint import pprint
+
+
+def get_file_from(dir, rand=False):
+    """Returns a filename from directory after user specifies which"""
+    files = [f for f in os.listdir(dir) if isfile(join(dir, f))]
+    input = random.randrange(0, len(files))
+    return dir + files[int(input) - 1]
+
+def define_argparser():
+    """Return and define arguments and help documentation"""
+    parser = argparse.ArgumentParser(
+        prog="colorful",
+        description="Retheme that pos.")
+    
+    parser.add_argument(
+        "-f", "--file",  metavar='FILE', dest='file',
+        help="The image file to work with.",)
+    parser.add_argument(
+        '-w', action="store_true",
+        default=False,
+        help="make this image the current wallpaper [default: False]")
+    parser.add_argument(
+        '-p', "--pipe", dest="pipename",
+        metavar="F", default="/tmp/display_data",
+        help="write the hexidecimal output to a new file [default: /tmp/display_data]")
+    parser.add_argument(
+        "-d", "--dir", dest="dir",
+        metavar="D",
+        help="Choose a directory and then choose a file from the prompt.")
+    parser.add_argument(
+        '-n', dest='n', metavar='N', type=int,
+        default=64,
+        help="The number of colors to fetch [default: 64]")
+    parser.add_argument(
+        '-q', dest='q', default=False,
+        action="store_true",
+        help="Set this flag to save the output to a hex file")
+    parser.add_argument(
+        '-r', dest='r', default=False,
+        action='store_true',
+        help="When used with the directory option chooses a random file")
+
+    return parser.parse_args()
+
+
+def do_configs(image):
+    dir = "/home/cody/.colorful/config/"
+    files = [f for f in os.listdir(dir) if isfile(join(dir, f))]
+    for i, file in enumerate(files):
+        if 'conf' not in file:
+            del(files[i])
+    config = ConfigParser.ConfigParser()
+    for file in files:
+        config.read(dir + file)
+        palette = image.get_palette(
+            config.get('Application', 'colors'))
+        prominents = image.get_colors_hsv(99999999)
+
+        lfile = config.get('Application', 'layout')
+        cfile = config.get('Application', 'conf')
+        format = config.get('Application', 'format')
+
+        out = parse_layout(lfile, palette, prominents, format)
+        render(cfile, out)
+
+
+def parse_layout(lfile, colors, prominents, format):
+    output = ''
+    with open(lfile, 'r') as lf:
+        lines = lf.readlines()
+        for l in lines:
+            rep = re.findall('\%[\w]?\d+', l)
+            for mat in rep:
+                if 'p' in mat:
+                    l = l.replace(mat, fmtpl(prominents[int(mat[2:])], format), 1)
+                else:
+                    l = l.replace(mat, fmtpl(colors[int(mat[1:])], format), 1)
+            output += l
+    return output
+
+
+def fmtpl(tpl, fmt):
+    if 'hex' == fmt:
+        return "#%02x%02x%02x" % tpl
+    if 'rgb' == fmt:
+        return ','.join([str(x) for x in tpl])
+
+
+def render(cfile, out):
+    with open(cfile, 'w+') as f2:
+        f2.write(out)
+
+
+def main():
+    args = define_argparser()
+    if args.dir is not None and args.file is not None:
+        print >> sys.stderr, "You cannot specify both a file and directory."
+        return 2
+
+    if args.dir is not None:
+        file = get_file_from(args.dir, args.r)
+    else:
+        file = args.file
+
+    image = Colorful(file)
+    
+    if args.q:
+        image.write_colors(args.n)
+
+    do_configs(image)
+
+    if args.w:
+        image.paper_me_baby()
+
+
+if __name__ == "__main__":
+    sys.exit(main())
