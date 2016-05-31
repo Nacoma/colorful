@@ -83,7 +83,7 @@ class Colorful:
             scheme.append(colors[cur])
             del(colors[cur])
 
-        scheme[0] = self.tint_shade(scheme[0], 0, 0.2)
+        scheme[0] = self.tint_shade(scheme[0], 0, 0.14)
         scheme[1] = self.tint_shade(scheme[15], .999, 1)
         return [(int(x[0]), int(x[1]), int(x[2])) for x in scheme]
 

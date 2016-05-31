@@ -1,0 +1,168 @@
+#Hi!, this config is not intended to become an example of beauty in yabar.
+#It is just intended to show an example (specifically an example config that uses internal blocks) of what you can do using yabar.
+#You are more than welcomed to send me (using a pull request maybe) your better colors and I will merge it.
+bar-list = ["bar1"];
+
+bar1:{
+    font: "Droid Sans 10";
+    block-list: ["pacman","ether","i3ws","wifi","vol","ya_date","ya_brightness","battery","ya_cpu","ya_mem","shutd"];
+    position: "top";
+  height: 25;
+  gap-vertical: 20;
+  background-color-argb: 0x0;
+    underline-size: 3;
+    overline-size: 0;
+    slack-size: 4;
+ether:
+{
+  exec:"~/.config/i3/blocks/network";
+  align: "right";
+  fixed-size: 50;
+  type: "periodic";
+  interval: 1;
+  underline-color-rgb:0xD95B43;
+  background-color-argb: 0x0;
+}
+
+pacman:{
+  exec: "upd='UPDATES:' && upd+=$(pacman -Qu | wc -l) && echo $upd";
+  type: "periodic";
+  align: "right";
+  fixed-size: 80;
+  interval: 30;
+  background-color-argb: 0x0;
+  underline-color-rgb:0x267682;
+  }
+i3ws: {
+    exec: "python2.7 ~/.yabar_scripts/i3ws.py"
+    align: "left";
+    type: "periodic";
+    interval: 5;
+    underline-color-rgb:0x279DB;
+    background-color-argb: 0x0;
+  }
+dropbox: {
+  exec: "~/.config/i3/blocks/dropbox.sh"
+  align: "right"
+  fixed-size: 50;
+  type: "periodic"
+  }
+shutd: {
+  exec: "python ~/.yabar_scripts/icon.py"
+  command-button1: "reboot"
+  fixed-size: 30;
+  type: "periodic"
+  align: "right"
+  underline-color-rgb:0x267682;
+  background-color-argb: 0x0;
+
+  }
+ya_title: {
+        exec: "YABAR_TITLE";
+        align: "left";
+        justify: "left";
+        fixed-size: 300;
+    }
+vol:{
+    exec:"~/.config/i3/blocks/volume.sh";
+    align: "right";
+    fixed-size: 50;
+    type: "periodic"
+    underline-color-rgb:0x267682;
+    background-color-argb: 0x0;
+    interval: 1;
+  }
+  blue:{
+    exec: "~/.config/i3/blocks/bluetooth"
+    type: "periodic"
+    align:"right"
+    fixed-size: 50;
+    internal-prefix:" "
+    interval: 20;
+    underline-color-rgb:0xD95B43;
+    background-color-rgb:0x1d1f21;
+  }
+    ya_date:{
+        exec: "YABAR_DATE";
+        align: "center";
+        fixed-size: 160;
+        interval: 3;
+        background-color-argb: 0x0;
+        underline-color-rgb:0x279DB;
+        internal-prefix: " ";
+        internal-option1: "%a %d %b, %I:%M";
+    }
+    ya_uptime:{
+        exec: "YABAR_UPTIME";
+        align: "right";
+        fixed-size: 70;
+        interval: 1;
+        background-color-rgb:0x1d1f21;
+        underline-color-rgb:0xF8CA00;
+        internal-prefix: " ";
+        internal-spacing: true;
+    }
+    ya_mem:{
+        exec: "YABAR_MEMORY";
+        align: "right";
+        fixed-size: 75;
+        interval: 1;
+        background-color-argb: 0x0;
+        underline-color-rgb:0x267682;
+    internal-prefix: "  ";
+        internal-spacing: true;
+    }
+    ya_brightness: {
+        exec: "YABAR_BRIGHTNESS";
+        align: "right";
+        fixed-size: 50;
+        interval: 1;
+        internal-prefix: " ";
+        internal-option1: "intel_backlight";
+        internal-spacing: true;
+    command-button1: "xbacklight -dec 1";
+    command-button2: "xbacklight -inc 1";
+    background-color-argb: 0x0;
+    underline-color-rgb:0x267682;
+    }
+    wifi: {
+        exec: "~/.config/i3/blocks/wifi.sh";
+        align: "right";
+        fixed-size: 50;
+        interval: 1;
+    type:"periodic"
+        underline-color-rgb:0xD95B43;
+    background-color-argb: 0x0;
+        internal-spacing: true;
+    }
+    ya_cpu: {
+        exec: "YABAR_CPU";
+        align: "right";
+        fixed-size: 70;
+        interval: 1;
+        internal-prefix: " ";
+        internal-suffix: "%";
+        background-color-argb: 0x0;
+        underline-color-rgb:0xD95B43;
+        internal-spacing: true;
+    }
+battery:{
+    exec:"python2.7 ~/.yabar_scripts/battery.py";
+    align: "right";
+    fixed-size: 60;
+    type: "periodic";
+    interval: 1;
+    background-color-argb: 0x0;
+    underline-color-rgb:0xD95B43;
+  }
+storage:{
+    exec: "python2.7 ~/.yabar_scripts/storage.py";
+    align: "right";
+    fixed-size: 80;
+    type: "periodic";
+    interval: 1;
+    foreground-color-rgb:0x51b2ff;
+    background-color-rgb:0x636600;
+  }
+
+}
