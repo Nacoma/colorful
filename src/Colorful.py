@@ -7,9 +7,6 @@ from random import sample
 import colorsys
 import sys
 
-matplotlib.use('TkAgg')
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.pyplot as plt
 
 # should use this, it's a less shitty version of tailing it with my pipe_ function.
 # from subprocess import Popen, PIPE
