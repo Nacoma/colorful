@@ -3,7 +3,6 @@ from PIL import Image, ImageStat
 from subprocess import call
 from pprint import pprint
 import math
-import matplotlib
 from random import sample
 import colorsys
 import sys
@@ -58,22 +57,6 @@ class Colorful:
                 tcolors.append([s, (r, g, b)])
 
         return [x[1] for x in sorted(tcolors, reverse=True)]
-
-    def plot_img(self):
-        colors = sorted(self.img.getcolors(99999999), reverse=True)
-        deets = sample([x[1] for x in colors], 15000)
-        c = ["#%02x%02x%02x" % x for x in deets]
-
-        plt.ioff()
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
-        ax.scatter(
-            [x[0] for x in deets],
-            [x[1] for x in deets],
-            [x[2] for x in deets],
-            c=c, marker='o')
-
-        plt.show()
 
     def get_palette(self, num):
         scheme = []
