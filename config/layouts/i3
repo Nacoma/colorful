@@ -9,7 +9,7 @@
 #
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
-exec bash /home/cody/.screenlayout/1080.sh
+# exec bash /home/cody/.screenlayout/1080.sh
 
 gaps inner 20
 gaps outer 20
