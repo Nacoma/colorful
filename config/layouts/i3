@@ -24,7 +24,7 @@ client.unfocused          %p5        %p5       %p3       %p5           %p5
 client.urgent             %p5        %p5       %p3       %p5           %p5
 client.background         %p5        %p5       %p3       %p5           %p5
 
-exec compton & 
+exec compton 
 exec clrfl -rw --dir /home/cody/images/
 bindsym $mod+d exec rofi -show run -lines 5 -eh 2 -width 100 -padding 450 "System San Francisco Display Regular 18"
 
