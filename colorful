@@ -122,6 +122,9 @@ def main():
     if args.w:
         image.paper_me_baby()
 
+    print("Proper reconfiguraiton requires running `xrdb -load` on the generated Xresources files,")
+    print("using `$mod+r` to reload i3, and restaring your terminal.")
+
 
 if __name__ == "__main__":
     sys.exit(main())
