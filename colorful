@@ -103,14 +103,18 @@ def render(cfile, out):
 
 def main():
     args = define_argparser()
-    if args.dir is not None and args.file is not None:
-        print >> sys.stderr, "You cannot specify both a file and directory."
-        return 2
-
-    if args.dir is not None:
-        file = get_file_from(args.dir, args.r)
-    else:
+    config = ConfigParser.ConfigParser()
+    config.read(os.environ['HOME'] + '/.colorful/default.conf')
+    dir = config.get('colorful', 'default_directory')
+    
+    if not args.dir:
+        file = get_file_from(dir, True)
+    elif args.file:
         file = args.file
+    elif args.dir:
+        file = get_file_from(args.dir, True)
+    else:
+        print>> sys.stderr, "No image specified."
 
     image = Colorful(file)
     
@@ -119,7 +123,8 @@ def main():
 
     do_configs(image)
 
-    if args.w:
+    w = config.get('colorful', 'wallpaper')
+    if args.w or w:
         image.paper_me_baby()
 
     print("Proper reconfiguraiton requires running `xrdb -load` on the generated Xresources files,")
