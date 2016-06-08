@@ -18,7 +18,7 @@ smart_borders on
 set $mod Mod4
 
                           #border    backgr    text      indicator     child_border
-client.focused            %p4        %p4       %2        %3            %3
+client.focused            %p4        %p4       %2        %3            %4
 client.focused_inactive   %p5        %p5       %p3       %p5           %p5
 client.unfocused          %p5        %p5       %p3       %p5           %p5
 client.urgent             %p5        %p5       %p3       %p5           %p5
