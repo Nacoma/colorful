@@ -171,5 +171,10 @@ bindsym $mod+r mode "resize"
 bar {
         status_command i3status
         tray_output primary
+	workspace_buttons no
+	colors {
+		background %1
+        	statusline %p1
+	}
 }
 
