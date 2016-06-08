@@ -11,15 +11,15 @@
 
 # exec bash /home/cody/.screenlayout/1080.sh
 
-gaps inner 20
-gaps outer 20
+gaps inner 30 
+gaps outer 5 
 
 smart_borders on
 set $mod Mod4
 
                           #border    backgr    text      indicator     child_border
-client.focused            %3         %3        %1        %3            %3
-client.focused_inactive   %p5        %p5       %p3       %p5           %p12
+client.focused            %p4        %p4       %2        %3            %3
+client.focused_inactive   %p5        %p5       %p3       %p5           %p5
 client.unfocused          %p5        %p5       %p3       %p5           %p5
 client.urgent             %p5        %p5       %p3       %p5           %p5
 client.background         %p5        %p5       %p3       %p5           %p5
