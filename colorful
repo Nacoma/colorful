@@ -106,15 +106,18 @@ def main():
     config = ConfigParser.ConfigParser()
     config.read(os.environ['HOME'] + '/.colorful/default.conf')
     dir = config.get('colorful', 'default_directory')
-    
-    if not args.dir:
-        file = get_file_from(dir, True)
-    elif args.file:
+   
+    if args.file:
         file = args.file
-    elif args.dir:
-        file = get_file_from(args.dir, True)
-    else:
-        print>> sys.stderr, "No image specified."
+    else: 
+        if not args.dir:
+            file = get_file_from(dir, True)
+        elif args.file:
+            file = args.file
+        elif args.dir:
+            file = get_file_from(args.dir, True)
+        else:
+            print>> sys.stderr, "No image specified."
 
     image = Colorful(file)
     
