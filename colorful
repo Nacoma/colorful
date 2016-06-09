@@ -1,6 +1,7 @@
 #!/usr/bin/python
 from os.path import isfile, join
 import sys
+import subprocess
 import os
 import argparse
 from src.Colorful import Colorful
@@ -73,6 +74,10 @@ def do_configs(image):
         out = parse_layout(lfile, palette, prominents, format)
         render(cfile, out)
 
+        on_complete = config.get('Application', 'on_complete')
+        if on_complete:
+            os.system(config.get('Application', 'on_complete'))
+
 
 def parse_layout(lfile, colors, prominents, format):
     output = ''
@@ -106,8 +111,10 @@ def main():
     config = ConfigParser.ConfigParser()
     config.read(os.environ['HOME'] + '/.colorful/default.conf')
     dir = config.get('colorful', 'default_directory')
-    
-    if not args.dir:
+   
+    if args.file:
+        file = args.file
+    elif not args.dir:
         file = get_file_from(dir, True)
     elif args.file:
         file = args.file
@@ -126,9 +133,6 @@ def main():
     w = config.get('colorful', 'wallpaper')
     if args.w or w:
         image.paper_me_baby()
-
-    print("Proper reconfiguraiton requires running `xrdb -load` on the generated Xresources files,")
-    print("using `$mod+r` to reload i3, and restaring your terminal.")
 
 
 if __name__ == "__main__":
