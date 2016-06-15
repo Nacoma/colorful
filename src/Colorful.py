@@ -33,6 +33,8 @@ class Colorful:
                 (255, 255, 255),  # White
         ]
 
+        self.colors = self.get_colors(256)
+
     def get_colors(self, num):
         """Get the most used colors in the image"""
         img = self.img
@@ -41,10 +43,11 @@ class Colorful:
         img = img.convert('P', palette=Image.ADAPTIVE, colors=num)
         img = img.convert('RGB')
         colors = sorted(img.getcolors(99999999), reverse=True)
+        self.colors = colors
         return colors
 
     def get_colors_hsv(self, num):
-        colors = self.get_colors(24)
+        colors = self.colors
         ncolors = [x[1] for x in colors]
         tcolors = []
         for i, v in enumerate(ncolors):
@@ -57,7 +60,7 @@ class Colorful:
 
     def get_palette(self, num):
         scheme = []
-        colors = [x[1] for x in self.get_colors(256)]
+        colors = [x[1] for x in self.colors]
         for ocol in self.defaults:
             cur = self.closest_match(ocol, colors)
             scheme.append(colors[cur])

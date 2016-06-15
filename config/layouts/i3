@@ -11,7 +11,7 @@
 
 # exec bash /home/cody/.screenlayout/1080.sh
 
-gaps inner 30 
+gaps inner 13 
 gaps outer 5 
 
 smart_borders on
