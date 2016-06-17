@@ -74,10 +74,6 @@ def do_configs(image):
         out = parse_layout(lfile, palette, prominents, format)
         render(cfile, out)
 
-        on_complete = config.get('Application', 'on_complete')
-        if on_complete:
-            os.system(config.get('Application', 'on_complete'))
-
 
 def parse_layout(lfile, colors, prominents, format):
     output = ''
@@ -114,14 +110,15 @@ def main():
    
     if args.file:
         file = args.file
-    elif not args.dir:
-        file = get_file_from(dir, True)
-    elif args.file:
-        file = args.file
-    elif args.dir:
-        file = get_file_from(args.dir, True)
-    else:
-        print>> sys.stderr, "No image specified."
+    else: 
+        if not args.dir:
+            file = get_file_from(dir, True)
+        elif args.file:
+            file = args.file
+        elif args.dir:
+            file = get_file_from(args.dir, True)
+        else:
+            print>> sys.stderr, "No image specified."
 
     image = Colorful(file)
     
