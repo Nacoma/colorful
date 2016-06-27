@@ -62,4 +62,5 @@ Color = %15
 Description=Colorful
 Opacity=30
 Wallpaper=
-Opacity=.9
+Opacity=.97
+Font=Fira_Code
