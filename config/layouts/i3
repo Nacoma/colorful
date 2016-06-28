@@ -18,11 +18,11 @@ smart_borders on
 set $mod Mod4
 
                           #border    backgr    text      indicator     child_border
-client.focused            %p4        %p4       %2        %3            %4
-client.focused_inactive   %p5        %p5       %p3       %p5           %p5
-client.unfocused          %p5        %p5       %p3       %p5           %p5
-client.urgent             %p5        %p5       %p3       %p5           %p5
-client.background         %p5        %p5       %p3       %p5           %p5
+client.focused            %p1        %p1       %p9       %3            %p1
+client.focused_inactive   %1         %1       %1         %1            %1
+client.unfocused          %1         %1       %1         %1            %1
+client.urgent             %1         %1       %1         %1            %1
+client.background         %1         %1       %1         %1            %1
 
 # exec compton 
 # exec clrfl -rw --dir /home/cody/images/

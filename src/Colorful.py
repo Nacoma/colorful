@@ -1,7 +1,7 @@
 #!/usr/bin/python
+from pprint import pprint
 from PIL import Image, ImageStat
 from subprocess import call
-from pprint import pprint
 import math
 from random import sample
 import colorsys
@@ -42,11 +42,11 @@ class Colorful:
             img = img.convert('RGB')
         img = img.convert('P', palette=Image.ADAPTIVE, colors=num)
         img = img.convert('RGB')
-        colors = sorted(img.getcolors(99999999), reverse=True)
+        colors = sorted(img.getcolors(256), reverse=True)
         self.colors = colors
         return colors
 
-    def get_colors_hsv(self, num):
+    def get_colors_hsv(self):
         colors = self.colors
         ncolors = [x[1] for x in colors]
         tcolors = []
@@ -58,34 +58,34 @@ class Colorful:
 
         return [x[1] for x in sorted(tcolors, reverse=True)]
 
-    def get_palette(self, num):
-        scheme = []
+    def get_palette(self):
         colors = [x[1] for x in self.colors]
-        for ocol in self.defaults:
-            cur = self.closest_match(ocol, colors)
-            scheme.append(colors[cur])
-            del(colors[cur])
+        palette = self.defaults
+        scheme = []
+
+        for color in palette:
+            scheme.append(self.closest_match(color, colors))
 
         scheme[0] = self.tint_shade(scheme[0], 0, 0.14)
         scheme[1] = self.tint_shade(scheme[15], .999, 1)
         return [(int(x[0]), int(x[1]), int(x[2])) for x in scheme]
 
     def closest_match(self, pt, samples):
-        cur = None
-        max = 1000
+        current = None
+        max_distance = 500
+
         for i, v in enumerate(samples):
-            dist = self.euclid_dist(pt, v)
-            if dist < max:
-                cur = i
-                max = dist
-        return cur
+            this_distance = self.euclid_dist(pt, v)
+            if this_distance < max_distance:
+                current = v
+                max_distance = this_distance
+        return current
 
     def tint_shade(self, pt, low, high):
         r, g, b = pt
         h, s, v = colorsys.rgb_to_hsv(r / 256., g / 256., b / 256.)
         v = max(min(v, high), low)
         return tuple([i * 256. for i in colorsys.hsv_to_rgb(h, s, v)])
-
 
     def closest_dist(self, pt, samples):
         cur = self.closest_match(pt, samples)
@@ -101,3 +101,13 @@ class Colorful:
         """Set the image as the wallpaper"""
         call(["feh", "--bg-scale",  self.file])
 
+    def actual_write(self, file, colors):
+        with open(file, 'w') as f:
+            for color in colors:
+                f.write("#%02x%02x%02x" % color)
+
+    def write_colors(self, colors):
+        self.actual_write('/tmp/colors2', self.get_palette())
+
+        colors = [x[1] for x in self.colors if x[0] > 300]
+        self.actual_write('/tmp/colors', colors)

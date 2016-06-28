@@ -62,9 +62,8 @@ def do_configs(image):
     config = ConfigParser.ConfigParser()
     for file in files:
         config.read(dir + file)
-        palette = image.get_palette(
-            config.get('Application', 'colors'))
-        prominents = image.get_colors_hsv(99999999)
+        palette = image.get_palette()
+        prominents = image.get_colors_hsv()
 
         lfile = config.get('Application', 'layout')
         cfile = config.get('Application', 'conf')
