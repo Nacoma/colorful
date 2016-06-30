@@ -5,7 +5,7 @@ import os
 import argparse
 from src.Colorful import Colorful
 import random
-import ConfigParser
+import configparser
 import re
 from pprint import pprint
 
@@ -54,12 +54,12 @@ def define_argparser():
 
 
 def do_configs(image):
-    dir = "/home/cody/.colorful/config/"
+    dir = "/home/cody/code/colorful/config/"
     files = [f for f in os.listdir(dir) if isfile(join(dir, f))]
     for i, file in enumerate(files):
         if 'conf' not in file:
             del(files[i])
-    config = ConfigParser.ConfigParser()
+    config = configparser.ConfigParser()
     for file in files:
         config.read(dir + file)
         palette = image.get_palette()
@@ -102,8 +102,8 @@ def render(cfile, out):
 
 def main():
     args = define_argparser()
-    config = ConfigParser.ConfigParser()
-    config.read(os.environ['HOME'] + '/.colorful/default.conf')
+    config = configparser.ConfigParser()
+    config.read(os.environ['HOME'] + '/code/colorful/default.conf')
     dir = config.get('colorful', 'default_directory')
    
     if args.file:
