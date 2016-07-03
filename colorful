@@ -4,6 +4,7 @@ import sys
 import os
 import argparse
 from src.Colorful import Colorful
+from src.Format import LayoutParser
 import random
 import configparser
 import re
@@ -63,42 +64,20 @@ def do_configs(image):
     for file in files:
         config.read(dir + file)
         palette = image.get_palette()
-        prominents = image.get_colors_hsv()
 
-        lfile = config.get('Application', 'layout')
-        cfile = config.get('Application', 'conf')
-        format = config.get('Application', 'format')
+        output_file = config.get('app', 'conf')
+        layout_file = config.get('app', 'layout')
 
-        out = parse_layout(lfile, palette, prominents, format)
-        render(cfile, out)
+        target = None
+        with open(layout_file, 'r') as file:
+            target = file.read()
+        parser = LayoutParser(target,
+                              config.get('app', 'format'),
+                              image,
+                              config.get('app', 'is_term'))
 
-
-def parse_layout(lfile, colors, prominents, format):
-    output = ''
-    with open(lfile, 'r') as lf:
-        lines = lf.readlines()
-        for l in lines:
-            rep = re.findall('\%[\w]?\d+', l)
-            for mat in rep:
-                if 'p' in mat:
-                    l = l.replace(mat, fmtpl(prominents[int(mat[2:])], format), 1)
-                else:
-                    l = l.replace(mat, fmtpl(colors[int(mat[1:])], format), 1)
-            output += l
-    return output
-
-
-def fmtpl(tpl, fmt):
-    if 'hex' == fmt:
-        return "#%02x%02x%02x" % tpl
-    if 'rgb' == fmt:
-        return ','.join([str(x) for x in tpl])
-
-
-def render(cfile, out):
-    with open(cfile, 'w+') as f2:
-        f2.write(out)
-
+        with open(output_file, 'w+') as file:
+            file.write(parser.target)
 
 def main():
     args = define_argparser()
@@ -119,7 +98,6 @@ def main():
             print>> sys.stderr, "No image specified."
 
     image = Colorful(file)
-    
     if args.q:
         image.write_colors(args.n)
 
@@ -129,8 +107,8 @@ def main():
     if args.w or w:
         image.paper_me_baby()
 
-    print("Proper reconfiguraiton requires running `xrdb -load` on the generated Xresources files,")
-    print("using `$mod+r` to reload i3, and restaring your terminal.")
+    os.system("i3-msg reload");
+    os.system("xrdb -load /home/cody/.config/i3/Xresources")
 
 
 if __name__ == "__main__":

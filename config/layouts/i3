@@ -11,18 +11,18 @@
 
 # exec bash /home/cody/.screenlayout/1080.sh
 
-gaps inner 50 
-gaps outer 0
+gaps inner 40 
+gaps outer 0 
 
 smart_borders on
 set $mod Mod4
 
-                          #border    backgr    text      indicator     child_border
-client.focused            %p1        %p1       %p9       %3            %p1
-client.focused_inactive   %1         %1       %1         %1            %1
-client.unfocused          %1         %1       %1         %1            %1
-client.urgent             %1         %1       %1         %1            %1
-client.background         %1         %1       %1         %1            %1
+                          #border    backgr      text           indicator     child_border
+client.focused            #%bg_sat   #%bg_sat    #%fg_sat       #%bg_sat           #%bg_sat
+client.focused_inactive   #%bg_unsat #%bg_unsat  #%11           #%bg_unsat    #%bg_unsat
+client.unfocused          #%bg_unsat #%bg_unsat  #%11           #%bg_unsat    #%bg_unsat
+client.urgent             #%bg_unsat #%bg_unsat  #%11           #%bg_unsat    #%bg_unsat
+client.background         #%bg_unsat #%bg_unsat  #%11           #%bg_unsat    #%bg_unsat
 
 # exec compton 
 # exec clrfl -rw --dir /home/cody/images/
@@ -173,8 +173,8 @@ bar {
         tray_output primary
 	workspace_buttons no
 	colors {
-		background %1
-        	statusline %p1
+		background #%bg_unsat
+        	statusline #%foreground
 	}
 }
 
