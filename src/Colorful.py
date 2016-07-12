@@ -1,7 +1,7 @@
 #!/usr/bin/python
+from pprint import pprint
 from PIL import Image, ImageStat
 from subprocess import call
-from pprint import pprint
 import math
 from random import sample
 import colorsys
@@ -15,7 +15,7 @@ class Colorful:
         self.file = file
         self.img = Image.open(self.file)
         self.defaults = [
-                (10, 10, 10),  # Black
+                #(10, 10, 10),  # Black
                 (255, 0, 0),  # Red
                 (0, 255, 0),  # Green
                 (255, 255, 0),  # Yellow
@@ -32,6 +32,9 @@ class Colorful:
                 (192, 192, 192),  # Light gray
                 (255, 255, 255),  # White
         ]
+        self.colors = self.get_colors(256)
+        self.sats = self.list_to_hsv()
+        self.light = self.is_light()
 
     def get_colors(self, num):
         """Get the most used colors in the image"""
@@ -40,49 +43,54 @@ class Colorful:
             img = img.convert('RGB')
         img = img.convert('P', palette=Image.ADAPTIVE, colors=num)
         img = img.convert('RGB')
-        colors = sorted(img.getcolors(99999999), reverse=True)
+        colors = sorted(img.getcolors(256), reverse=True)
+        self.colors = colors
         return colors
 
-    def get_colors_hsv(self, num):
-        colors = self.get_colors(24)
-        ncolors = [x[1] for x in colors]
-        tcolors = []
-        for i, v in enumerate(ncolors):
-            r, g, b = v
-            h, s, v = colorsys.rgb_to_hsv(r / 255., g / 255., b / 255.)
-            if .1 < s < .8:
-                tcolors.append([s, (r, g, b)])
+    def list_to_hsv(self):
+        """ Convert our color list to HSV """
+        return sorted([[x[0], self.rgb_to_hsv(x[1])] for x in self.colors], reverse=True)
 
-        return [x[1] for x in sorted(tcolors, reverse=True)]
-
-    def get_palette(self, num):
+    def get_palette(self):
+        colors = [x[1] for x in self.colors]
+        palette = self.defaults
         scheme = []
-        colors = [x[1] for x in self.get_colors(256)]
-        for ocol in self.defaults:
-            cur = self.closest_match(ocol, colors)
-            scheme.append(colors[cur])
-            del(colors[cur])
+        
+        scheme.append(self.colors[0][1])
 
-        scheme[0] = self.tint_shade(scheme[0], 0, 0.14)
+        for color in palette:
+            scheme.append(self.closest_match(color, colors))
+
+        scheme[0] = self.tint_shade(scheme[0], 0, 0.2)
         scheme[1] = self.tint_shade(scheme[15], .999, 1)
         return [(int(x[0]), int(x[1]), int(x[2])) for x in scheme]
 
     def closest_match(self, pt, samples):
-        cur = None
-        max = 1000
+        current = None
+        max_distance = 500
         for i, v in enumerate(samples):
-            dist = self.euclid_dist(pt, v)
-            if dist < max:
-                cur = i
-                max = dist
-        return cur
+            this_distance = self.euclid_dist(pt, v)
+            if this_distance < max_distance:
+                current = v
+                max_distance = this_distance
+        return current
 
     def tint_shade(self, pt, low, high):
-        r, g, b = pt
-        h, s, v = colorsys.rgb_to_hsv(r / 256., g / 256., b / 256.)
+        h, s, v = self.rgb_to_hsv(pt)
         v = max(min(v, high), low)
-        return tuple([i * 256. for i in colorsys.hsv_to_rgb(h, s, v)])
+        return tuple([i * 255. for i in colorsys.hsv_to_rgb(h, s, v)])
 
+    def tint_sat(self, pt, low, high):
+        h, s, v = self.rgb_to_hsv(pt)
+        s = max(min(s, high), low)
+        return tuple([i * 255. for i in colorsys.hsv_to_rgb(h, s, v)])
+
+    def tint_all(self, pt, s_low, s_high, v_low, v_high):
+        return self.tint_shade(self.tint_sat(pt, s_low, s_high), v_low, v_high)
+
+    def hsv_to_rgb(self, color):
+        h, s, v = color
+        return tuple([i * 255. for i in colorsys.hsv_to_rgb(h, s, v)])
 
     def closest_dist(self, pt, samples):
         cur = self.closest_match(pt, samples)
@@ -96,5 +104,73 @@ class Colorful:
 
     def paper_me_baby(self):
         """Set the image as the wallpaper"""
-        call(["feh", "--bg-scale",  self.file])
+        call(["feh", "--bg-tile",  self.file])
 
+    def actual_write(self, file, colors):
+        with open(file, 'w') as f:
+            for color in colors:
+                f.write("#%02x%02x%02x" % color)
+
+    def rgb_to_hsv(self, color):
+        """ basic, no nonsense conersion to HSV from our RGB tuple. """
+        r, g, b = color
+        return colorsys.rgb_to_hsv(r / 255., g / 255., b / 255.)
+
+    def is_light(self):
+        return self.get_light_avg > 150
+
+    def get_opac(self):
+        if self.light:
+            return .93
+        else:
+            return .84
+
+    def get_light_avg(self):
+        count = 0
+        total = 0
+        for qty, color in self.sats:
+            h, s, v = self.rgb_to_hsv(color)
+            count += qty
+            total += qty * (s*.3 + v*.7 / 2)
+        return average
+
+    def get_bg(self):
+        if self.light:
+            return self.tint_all(self.colors[0][1], .0,.08,.85,1)
+        else:
+            return self.tint_all(self.colors[0][1], 0, .3)
+
+    def get_max_range(self):
+        return [self.colors[64][0]]
+
+    def get_sat_bg(self):
+        sat = (0., 0., 0.)
+        for qty, color in self.sats:
+            h, s, v = color
+            if s > sat[1]:
+                pprint('hur')
+                sat = (h, s, v)
+        return self.hsv_to_rgb(sat)
+
+    def get_unsat_bg(self):
+        min_h, min_s, min_v = (0, .001, 0)
+        sat = (0, 1, 0)
+        for qty, color in self.sats:
+            h, s, v = color
+            if min_s < s and s < sat[1]:
+                sat = (h, s, v)
+        return self.hsv_to_rgb(sat)
+                
+        
+    def get_fg(self):
+        if self.light:
+            return self.tint_shade(self.colors[0][1], 0, .3)
+        else:
+            return self.tint_shade(self.colors[0][1], .8, 1)
+
+
+    def get_sat_fg(self):
+        if self.light:
+            return self.tint_all(self.colors[0][1], .2,.5, .7, .9)
+        else:
+            return self.tint_all(self.colors[0][1], .3, 1, .8, 1)

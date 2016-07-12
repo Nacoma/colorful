@@ -3,10 +3,10 @@
 ! ------------------------------------------------------------------------------
 
 rofi.color-enabled: true
-rofi.color-window: #393939, #393939, %p0
-rofi.color-normal: #393939, #ffffff, #393939, %p0, #ffffff
-rofi.color-active: #393939, %p0, #393939, %p0, %p2
-rofi.color-urgent: #393939, #f3843d, #393939, %p1, #ffc39c
-rofi.opacity: 80
+rofi.color-window: #%background, #%background, #%bg_sat
+rofi.color-normal: #%background, #%foreground, #%background, #%bg_sat, #%foreground
+rofi.color-active: #%background, #%bg_sat, #%background, #%bg_sat, #%bg_sat
+rofi.color-urgent: #%background, #f3843d, #%background, #%p1, #ffc39c
+rofi.opacity: 88
 rofi.font: Inconsolata 18
 

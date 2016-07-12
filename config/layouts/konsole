@@ -1,5 +1,5 @@
 [Background]
-Color = %0
+Color = %background
 
 [BackgroundIntense]
 Color = %1
@@ -53,13 +53,13 @@ Color = %14
 Color = %15
 
 [Foreground]
-Color = %14
+Color = %foreground
 
 [ForegroundIntense]
 Color = %15
 
 [General]
 Description=Colorful
-Opacity=30
 Wallpaper=
-Opacity=.8
+Opacity= %opacity
+Font=Inconsolata
