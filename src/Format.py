@@ -20,7 +20,6 @@ class LayoutParser:
 
     def set_opac(self, image):
         """ Helper to set the opacity string """
-        pprint(image.get_opac())
         self.set_keys('opacity', image.get_opac())
 
     def set_bg(self, image):

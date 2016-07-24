@@ -2,6 +2,7 @@
 from os.path import isfile, join
 import sys
 import os
+import subprocess
 import argparse
 from src.Colorful import Colorful
 from src.Format import LayoutParser
@@ -107,8 +108,10 @@ def main():
     if args.w or w:
         image.paper_me_baby()
 
-    os.system("i3-msg reload");
-    os.system("xrdb -load /home/cody/.config/i3/Xresources")
+    subprocess.check_output('i3-msg reload', shell=True)
+    subprocess.check_output('xrdb -load /home/cody/.config/i3/Xresources', shell=True)
+    # os.popen("i3-msg reload &> /dev/null").read()
+    # os.popen("xrdb -load /home/cody/.config/i3/Xresources").read()
 
 
 if __name__ == "__main__":

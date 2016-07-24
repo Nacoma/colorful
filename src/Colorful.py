@@ -34,7 +34,19 @@ class Colorful:
         ]
         self.colors = self.get_colors(256)
         self.sats = self.list_to_hsv()
+        self.saturation_avg = self.get_index_average(1)
+        self.value_avg = self.get_index_average(2)
+        self.light_avg = self.get_light_avg()
         self.light = self.is_light()
+
+        print("\r\n")
+        print("Colors!")
+        print("Image          : %s" % self.file)
+        print("Is Light       : %s" % self.light)
+        print("Opacity        : %s\r\n" % self.get_opac())
+        print("Average Sat.   : %s" % self.saturation_avg)
+        print("Average Value  : %s" % self.value_avg)
+        print("Average CLight : %s\r\n" % self.light_avg)
 
     def get_colors(self, num):
         """Get the most used colors in the image"""
@@ -63,6 +75,16 @@ class Colorful:
 
         scheme[0] = self.tint_shade(scheme[0], 0, 0.2)
         scheme[1] = self.tint_shade(scheme[15], .999, 1)
+
+        if self.light:
+            for i in range(2, 15):
+                scheme[i] = self.tint_sat(scheme[i], 1 - self.saturation_avg, 1)
+                scheme[i] = self.tint_shade(scheme[i], 0, self.light_avg)
+        else:
+            for i in range(2, 15):
+                scheme[i] = self.tint_sat(scheme[i], self.light_avg / 2, 1)
+                scheme[i] = self.tint_shade(scheme[i], self.value_avg,  1)
+
         return [(int(x[0]), int(x[1]), int(x[2])) for x in scheme]
 
     def closest_match(self, pt, samples):
@@ -117,28 +139,28 @@ class Colorful:
         return colorsys.rgb_to_hsv(r / 255., g / 255., b / 255.)
 
     def is_light(self):
-        return self.get_light_avg > 150
+        return self.light_avg > .5
 
     def get_opac(self):
-        if self.light:
-            return .93
-        else:
-            return .84
+        return .9 + (self.value_avg + self.saturation_avg) / 15
 
     def get_light_avg(self):
+        return self.value_avg * .63 + self.saturation_avg * .37
+
+    def get_index_average(self, index):
         count = 0
         total = 0
-        for qty, color in self.sats:
-            h, s, v = self.rgb_to_hsv(color)
+        for qty, color in self.colors:
+            tmp = self.rgb_to_hsv(color)
             count += qty
-            total += qty * (s*.3 + v*.7 / 2)
-        return average
+            total += qty * (tmp[index])
+        return total / count
 
     def get_bg(self):
         if self.light:
-            return self.tint_all(self.colors[0][1], .0,.08,.85,1)
+            return self.tint_all(self.colors[0][1], .0, .1,.9,1)
         else:
-            return self.tint_all(self.colors[0][1], 0, .3)
+            return self.tint_all(self.colors[0][1], 0, self.light_avg / 4, 0, self.light_avg / 2)
 
     def get_max_range(self):
         return [self.colors[64][0]]
@@ -148,7 +170,6 @@ class Colorful:
         for qty, color in self.sats:
             h, s, v = color
             if s > sat[1]:
-                pprint('hur')
                 sat = (h, s, v)
         return self.hsv_to_rgb(sat)
 
